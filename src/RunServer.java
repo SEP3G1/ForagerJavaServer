@@ -19,7 +19,7 @@ public class RunServer {
         Socket socket = null;
 
         try {
-            serverSocket = new ServerSocket(Config.PORT_T1);
+            serverSocket = new ServerSocket(Config.PORT_T2);
         } catch (IOException e) {
             e.printStackTrace();
         }
