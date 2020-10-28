@@ -1,3 +1,5 @@
+import Config.Config;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -6,7 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class RunServer {
-    static final int PORT = 4343;
 
     public static void main(String args[]) {
         System.out.println("Establishing REST connection");
@@ -18,7 +19,7 @@ public class RunServer {
         Socket socket = null;
 
         try {
-            serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(Config.PORT_T1);
         } catch (IOException e) {
             e.printStackTrace();
         }

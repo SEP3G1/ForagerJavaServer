@@ -1,3 +1,4 @@
+import Config.Config;
 import Models.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
@@ -13,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException
     {
         HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet("http://10.152.210.21:5001/api/userlogin?userName=Oliver&pass=654321");
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/userlogin?userName=Oliver&pass=654321");
         HttpResponse response = client.execute(request);
         BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
         String line = "";
