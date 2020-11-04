@@ -72,7 +72,10 @@ public class EchoThread extends Thread {
                 switch (r.get(0)){
                     case "search": toSend = search(r.get(1)); break;
                     case "login": toSend = login(r.get(1)); break;
+                    case "getlisting": toSend = getListing(r.get(1)); break;
                     case "createlisting": toSend = createListing(r.get(1)); break;
+                    case "getproducts": toSend = getProducts(); break;
+                    case "getproductcategories": toSend = getProductCategories(); break;
                 }
 
                 // Sending
@@ -96,16 +99,86 @@ public class EchoThread extends Thread {
         }
     }
 
+    private String getProductCategories() throws IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        // Creates the request for the HTTP server
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/productcatagory");
+
+        // Executes the HTTP server request
+        HttpResponse response = client.execute(request);
+
+        // Get the value of the header in the HTTP request. Expected 200 OK
+        String status = String.valueOf(response.getStatusLine());
+        System.out.println("Response: " + status);
+
+        // Reads the body of the HTTP response
+        BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
+        String line = "";
+
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
+            return line;
+        }
+        return "Not implemented";
+    }
+
+    private String getProducts() throws IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        // Creates the request for the HTTP server
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/product");
+
+        // Executes the HTTP server request
+        HttpResponse response = client.execute(request);
+
+        // Get the value of the header in the HTTP request. Expected 200 OK
+        String status = String.valueOf(response.getStatusLine());
+        System.out.println("Response: " + status);
+
+        // Reads the body of the HTTP response
+        BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
+        String line = "";
+
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
+            return line;
+        }
+        return "Not implemented";
+    }
+
+    private String getListing(String id) throws IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        // Creates the request for the HTTP server
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing?id=" + id);
+
+        // Executes the HTTP server request
+        HttpResponse response = client.execute(request);
+
+        // Get the value of the header in the HTTP request. Expected 200 OK
+        String status = String.valueOf(response.getStatusLine());
+        System.out.println("Response: " + status);
+
+        // Reads the body of the HTTP response
+        BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
+
+        String line = "";
+
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
+            return line;
+        }
+        return "Not implemented";
+    }
+
     private String createListing(String str) throws IOException
     {
         HttpClient client = new DefaultHttpClient();
-        System.out.println(str);
-        str = str.replaceAll("}","%7D");
-        str = str.replaceAll("\\{", "%7B");
-        str = str.replaceAll("\"", "");
         String uri = ("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing?listingAsString=");
+        String query = URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
         // Creates the request for the HTTP server
-        HttpPost request = new HttpPost(uri + str);
+        HttpPost request = new HttpPost(uri + query);
 
         System.out.println(request.getMethod() + request.toString());
         // Executes the HTTP server request
@@ -151,7 +224,9 @@ public class EchoThread extends Thread {
     private String login(String q) throws IOException
     {
         ObjectMapper objectMapper = new ObjectMapper();
-        ArrayList<String> r = objectMapper.readValue(q, new TypeReference<ArrayList<String>>(){});
+        ArrayList<String> r = objectMapper.readValue(q, new TypeReference<>()
+        {
+        });
         HttpClient client = new DefaultHttpClient();
 
         // Creates the request for the HTTP server
