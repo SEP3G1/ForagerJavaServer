@@ -116,7 +116,7 @@ public class EchoThread extends Thread {
         HttpClient client = new DefaultHttpClient();
 
         // Creates the request for the HTTP server
-        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/userlogin?userName=" + r.get(0) + "&pass=" + r.get(1));
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/userlogin?email=" + r.get(0) + "&pass=" + r.get(1));
 
         // Executes the HTTP server request
         HttpResponse response = client.execute(request);
