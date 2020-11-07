@@ -4,23 +4,23 @@ import java.util.ArrayList;
 
 public class Product
 {
-  public String type;
-  ArrayList<String> images;
+  public int productId;
+  public String name;
+  public ProductCategory productCategory;
+  public String imagesString;
+  public ArrayList<String> images;
 
-  public Product(String type, String url){
-    this.type = type;
-    images = new ArrayList<String>();
-    images.add(url);
+  public Product(){
+    //Required for jackson to serialize to Product
+    super();
   }
-
-  public String getType()
+  public Product(int productId, String name, ProductCategory productCategory,
+      String imagesString, ArrayList<String> images)
   {
-    return type;
+    this.productId = productId;
+    this.name = name;
+    this.productCategory = productCategory;
+    this.imagesString = imagesString;
+    this.images = images;
   }
-
-  public ArrayList<String> getImages()
-  {
-    return images;
-  }
-
 }

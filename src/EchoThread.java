@@ -31,14 +31,14 @@ public class EchoThread extends Thread {
     public EchoThread(Socket clientSocket) {
         this.socket = clientSocket;
         products = new ArrayList<Product>();
-        products.add(new Product("Cucumber", "https://i.ndtvimg.com/mt/cooks/2014-11/cucumber.jpg"));
-        products.add(new Product("Milk", "https://i.guim.co.uk/img/media/410573030f4d4b95244a651ad41d70f160c61600/0_0_4136_2788/master/4136.jpg?width=700&quality=85&auto=format&fit=max&s=5f65f2f95cd42c42c9d1eede2e80c6fd"));
-        products.add(new Product("Melon", "https://www.euroharvest.co.uk/wp-content/uploads/2020/07/Cantaloupe-melon.jpeg"));
-        products.add(new Product("Tomato", "https://cdn.shopify.com/s/files/1/0244/4961/3905/products/tomato@2x.jpg?v=1576807420"));
-        products.add(new Product("Lettuce", "https://images-na.ssl-images-amazon.com/images/I/41CGtIyWgML._AC_.jpg"));
-        products.add(new Product("Hotdog Bread", "https://5.imimg.com/data5/XN/GP/MY-48605426/hot-dog-buns-500x500.jpg"));
-        products.add(new Product("Wine", "https://cdn-a.william-reed.com/var/wrbm_gb_food_pharma/storage/images/publications/food-beverage-nutrition/foodnavigator-asia.com/headlines/markets/wine-will-be-fine-outlook-for-online-sales-in-china-remains-positive-despite-coronavirus-outbreak/10756649-1-eng-GB/Wine-will-be-fine-Outlook-for-online-sales-in-China-remains-positive-despite-coronavirus-outbreak_wrbm_large.jpg"));
-        products.add(new Product("Sugar", "https://chriskresser.com/wp-content/uploads/467009529.jpg"));
+        products.add(new Product(1,"Cucumber",null, "https://i.ndtvimg.com/mt/cooks/2014-11/cucumber.jpg", null));
+        products.add(new Product(1,"Milk",null, "https://i.guim.co.uk/img/media/410573030f4d4b95244a651ad41d70f160c61600/0_0_4136_2788/master/4136.jpg?width=700&quality=85&auto=format&fit=max&s=5f65f2f95cd42c42c9d1eede2e80c6fd", null));
+        products.add(new Product(1,"Melon",null, "https://www.euroharvest.co.uk/wp-content/uploads/2020/07/Cantaloupe-melon.jpeg", null));
+        products.add(new Product(1,"Tomato",null, "https://cdn.shopify.com/s/files/1/0244/4961/3905/products/tomato@2x.jpg?v=1576807420", null));
+        products.add(new Product(1,"Lettuce",null, "https://images-na.ssl-images-amazon.com/images/I/41CGtIyWgML._AC_.jpg", null));
+        products.add(new Product(1,"Hotdog Bread",null, "https://5.imimg.com/data5/XN/GP/MY-48605426/hot-dog-buns-500x500.jpg", null));
+        products.add(new Product(1,"Wine",null, "https://cdn-a.william-reed.com/var/wrbm_gb_food_pharma/storage/images/publications/food-beverage-nutrition/foodnavigator-asia.com/headlines/markets/wine-will-be-fine-outlook-for-online-sales-in-china-remains-positive-despite-coronavirus-outbreak/10756649-1-eng-GB/Wine-will-be-fine-Outlook-for-online-sales-in-China-remains-positive-despite-coronavirus-outbreak_wrbm_large.jpg", null));
+        products.add(new Product(1,"Sugar",null, "https://chriskresser.com/wp-content/uploads/467009529.jpg", null));
     }
 
     //Listens for bytes and echos back to sender
@@ -164,12 +164,34 @@ public class EchoThread extends Thread {
         BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
 
         String line = "";
-
+        ObjectMapper objectMapper = new ObjectMapper();
+        Listing listing = null;
+        //Read body
         while ((line = rd.readLine()) != null) {
-            System.out.println(line);
-            return line;
+            if (line != null){
+                //Map listing to object
+                listing = (Listing) objectMapper.readValue(line, Listing.class);
+            }
         }
-        return "Not implemented";
+
+
+        //Get product
+        HttpGet request2 = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/product/" + listing.productId);
+        HttpResponse response2 = client.execute(request2);
+        BufferedReader rd2 = new BufferedReader (new InputStreamReader(response2.getEntity().getContent()));
+        Product product = null;
+        while ((line = rd2.readLine()) != null) {
+            if (line != null){
+                System.out.println("Mapping: " + line);
+                product = objectMapper.readValue(line, Product.class);
+            }
+            System.out.println(line);
+        }
+        //Insert product in listing
+        listing.product = product;
+        String listingJSON = objectMapper.writeValueAsString(listing);
+        System.out.println("Sent: " + listingJSON);
+        return listingJSON;
     }
 
     private String createListing(String str) throws IOException
@@ -206,7 +228,8 @@ public class EchoThread extends Thread {
         Random rand = new Random();
         for (int i = 0; i < (9+rand.nextInt(8)); i++)
         {
-            listings.add(new Listing(10, products.get(rand.nextInt(products.size())), rand.nextInt(50), rand.nextInt(5000)/1000, "20/10/2020", "No comment.", (rand.nextInt(2) == 0 ? true : false )));
+            Product product = products.get(rand.nextInt(products.size()));
+            listings.add(new Listing(i, 1, product.productId, product, rand.nextInt(50), rand.nextInt(5000)/1000,"kg",9999,11111,"Address", "8700", (rand.nextInt(2) == 0 ? true : false ), "", 1, false, "No comment", null));
         }
         SearchQuery q = new SearchQuery(str, listings.size() + rand.nextInt(50));
         q.setListings(listings);
