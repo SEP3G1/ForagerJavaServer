@@ -292,7 +292,7 @@ public class EchoThread extends Thread {
             //Insert product in listing
             listing.product = product;
         }
-        SearchQuery searchQuery = new SearchQuery("All",listings.size());
+        SearchQuery searchQuery = new SearchQuery("Newest listings",listings.size());
         searchQuery.setListings(listings);
 
         String jsonSQ = objectMapper.writeValueAsString(searchQuery);
