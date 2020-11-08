@@ -151,7 +151,7 @@ public class EchoThread extends Thread {
     {
         HttpClient client = new DefaultHttpClient();
         // Creates the request for the HTTP server
-        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing?id=" + id);
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing/" + id);
 
         // Executes the HTTP server request
         HttpResponse response = client.execute(request);
@@ -229,7 +229,7 @@ public class EchoThread extends Thread {
         for (int i = 0; i < (9+rand.nextInt(8)); i++)
         {
             Product product = products.get(rand.nextInt(products.size()));
-            listings.add(new Listing(i, 1, product.productId, product, rand.nextInt(50), rand.nextInt(5000)/1000,"kg",9999,11111,"Address", "8700", (rand.nextInt(2) == 0 ? true : false ), "", 1, false, "No comment", null));
+            listings.add(new Listing(i, 1, product.productId, product, rand.nextInt(50), rand.nextInt(5000)/1000,"kg","","636128254636521657","Address", "8700", (rand.nextInt(2) == 0 ? true : false ), "", 1, false, "No comment", null));
         }
         SearchQuery q = new SearchQuery(str, listings.size() + rand.nextInt(50));
         q.setListings(listings);
@@ -239,10 +239,67 @@ public class EchoThread extends Thread {
         System.out.println("Send: " + result);
         return result;
     }
-    private String search(String q) throws JsonProcessingException
+    private String search(String q) throws IOException
     {
-        return getJSONQuery(q);
+        if (q == null)
+        {
+            return getAllListings();
+        }
+        else
+            return getJSONQuery(q);
     }
+
+    private String getAllListings() throws IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        // Creates the request for the HTTP server
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing");
+
+        // Executes the HTTP server request
+        HttpResponse response = client.execute(request);
+
+        // Get the value of the header in the HTTP request. Expected 200 OK
+        String status = String.valueOf(response.getStatusLine());
+        System.out.println("Response: " + status);
+
+        // Reads the body of the HTTP response
+        BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
+
+        String line = "";
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<Listing> listings = new ArrayList<>();
+        //Read body
+        while ((line = rd.readLine()) != null) {
+            if (line != null){
+                //Map listing to object
+                //listing = (Listing) objectMapper.readValue(line, Listing.class);
+                listings = (ArrayList<Listing>) objectMapper.readValue(line, new TypeReference<ArrayList<Listing>>() {});
+            }
+        }
+
+        for (Listing listing: listings)
+        {
+            //Get product
+            HttpGet request2 = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/product/" + listing.productId);
+            HttpResponse response2 = client.execute(request2);
+            BufferedReader rd2 = new BufferedReader (new InputStreamReader(response2.getEntity().getContent()));
+            Product product = null;
+            while ((line = rd2.readLine()) != null) {
+                if (line != null){
+                    product = objectMapper.readValue(line, Product.class);
+                }
+            }
+            //Insert product in listing
+            listing.product = product;
+        }
+        SearchQuery searchQuery = new SearchQuery("All",listings.size());
+        searchQuery.setListings(listings);
+
+        String jsonSQ = objectMapper.writeValueAsString(searchQuery);
+        System.out.println(jsonSQ);
+        return jsonSQ;
+    }
+
     //Expects username, password
     private String login(String q) throws IOException
     {

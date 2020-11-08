@@ -13,8 +13,8 @@ public class Listing
   public double price;
   public double quantity;
   public String unit;
-  public int startDate;
-  public int bestBefore;
+  public String startDate;
+  public String bestBefore;
   public String pickupAddress;
   public String postcode;
   public boolean hasDelivery;
@@ -30,7 +30,7 @@ public class Listing
   }
 
   public Listing(int listingId, int userId, int productId, Product product,
-      double price, double quantity, String unit, int startDate, int bestBefore,
+      double price, double quantity, String unit, String startDate, String bestBefore,
       String pickupAddress, String postcode, boolean hasDelivery,
       String pictureList, int numberOfViews, boolean isArchived, String comment,
       ArrayList<String> pictures)
@@ -122,26 +122,6 @@ public class Listing
   public void setUnit(String unit)
   {
     this.unit = unit;
-  }
-
-  public int getStartDate()
-  {
-    return startDate;
-  }
-
-  public void setStartDate(int startDate)
-  {
-    this.startDate = startDate;
-  }
-
-  public int getBestBefore()
-  {
-    return bestBefore;
-  }
-
-  public void setBestBefore(int bestBefore)
-  {
-    this.bestBefore = bestBefore;
   }
 
   public String getPickupAddress()
