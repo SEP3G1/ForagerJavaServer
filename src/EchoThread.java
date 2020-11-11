@@ -103,7 +103,7 @@ public class EchoThread extends Thread {
     {
         HttpClient client = new DefaultHttpClient();
         // Creates the request for the HTTP server
-        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/productcatagory");
+        HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/productcategory");
 
         // Executes the HTTP server request
         HttpResponse response = client.execute(request);

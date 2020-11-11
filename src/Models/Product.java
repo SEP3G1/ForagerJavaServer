@@ -6,15 +6,15 @@ public class Product
 {
   public int productId;
   public String name;
-  public ProductCategory productCategory;
   public String imagesString;
   public ArrayList<String> images;
+  public String productCategory;
 
   public Product(){
     //Required for jackson to serialize to Product
     super();
   }
-  public Product(int productId, String name, ProductCategory productCategory,
+  public Product(int productId, String name, String productCategory,
       String imagesString, ArrayList<String> images)
   {
     this.productId = productId;
