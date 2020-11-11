@@ -54,17 +54,7 @@ public class ListingController implements IListingController
         listing = objectMapper.readValue(line, Listing.class);
       }
     }
-    BufferedReader rd2 = communicationController.HttpGetRequest("/api/product/" + listing.productId);
 
-    Product product = null;
-    while ((line = rd2.readLine()) != null) {
-      if (line != null){
-        product = objectMapper.readValue(line, Product.class);
-      }
-      System.out.println(line);
-    }
-    //Insert product in listing
-    listing.product = product;
     String listingJSON = objectMapper.writeValueAsString(listing);
     return listingJSON;
   }
