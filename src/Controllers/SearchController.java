@@ -21,17 +21,19 @@ public class SearchController implements ISearchController
 
   @Override public String search(String q) throws IOException
   {
-    if (q == null)
-    {
-      return getAllListings();
-    }
-    return "Something Really Bad Happened";
+      return getAllListings(q);
   }
 
 
-  @Override public String getAllListings() throws IOException
+  @Override public String getAllListings(String q) throws IOException
   {
-    rd = communicationController.HttpGetRequest("/api/listing");
+    StringBuilder queryString = new StringBuilder().append("/api/listing");
+
+    if (q != null)
+    {
+      queryString.append(q);
+    }
+    rd = communicationController.HttpGetRequest(queryString.toString());
 
     String line = "";
     ObjectMapper objectMapper = new ObjectMapper();
