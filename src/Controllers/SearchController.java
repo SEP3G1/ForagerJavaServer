@@ -18,9 +18,26 @@ import java.util.ArrayList;
 
 public class SearchController implements ISearchController
 {
+  private HttpClient client;
+
+  public SearchController(HttpClient client)
+  {
+    this.client = client;
+  }
+
+
+  @Override public String search(String q) throws IOException
+  {
+    if (q == null)
+    {
+      return getAllListings();
+    }
+    return "Not implemented";
+  }
+
+
   @Override public String getAllListings() throws IOException
   {
-    HttpClient client = new DefaultHttpClient();
     // Creates the request for the HTTP server
     HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing");
 

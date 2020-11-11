@@ -18,6 +18,7 @@ public class RunServer {
         ServerSocket serverSocket = null;
         Socket socket = null;
 
+
         try {
             serverSocket = new ServerSocket(Config.PORT_T2);
         } catch (IOException e) {
