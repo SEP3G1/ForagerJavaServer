@@ -1,30 +1,23 @@
 package Controllers;
 
-import Config.Config;
 import Models.Listing;
 import Models.Product;
 import Models.SearchQuery;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class SearchController implements ISearchController
 {
-  private HttpClient client;
+  private ICommunicationController communicationController;
+  private BufferedReader rd;
 
-  public SearchController(HttpClient client)
+  public SearchController(ICommunicationController communicationController)
   {
-    this.client = client;
+    this.communicationController = communicationController;
   }
-
 
   @Override public String search(String q) throws IOException
   {
@@ -32,24 +25,13 @@ public class SearchController implements ISearchController
     {
       return getAllListings();
     }
-    return "Not implemented";
+    return "Something Really Bad Happened";
   }
 
 
   @Override public String getAllListings() throws IOException
   {
-    // Creates the request for the HTTP server
-    HttpGet request = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/listing");
-
-    // Executes the HTTP server request
-    HttpResponse response = client.execute(request);
-
-    // Get the value of the header in the HTTP request. Expected 200 OK
-    String status = String.valueOf(response.getStatusLine());
-    System.out.println("Response: " + status);
-
-    // Reads the body of the HTTP response
-    BufferedReader rd = new BufferedReader (new InputStreamReader(response.getEntity().getContent()));
+    rd = communicationController.HttpGetRequest("/api/listing");
 
     String line = "";
     ObjectMapper objectMapper = new ObjectMapper();
@@ -65,12 +47,9 @@ public class SearchController implements ISearchController
 
     for (Listing listing: listings)
     {
-      //Get product
-      HttpGet request2 = new HttpGet("http://"+ Config.IP_T3 + ":" + Config.PORT_T3 + "/api/product/" + listing.productId);
-      HttpResponse response2 = client.execute(request2);
-      BufferedReader rd2 = new BufferedReader (new InputStreamReader(response2.getEntity().getContent()));
+      rd = communicationController.HttpGetRequest("/api/product/" + listing.productId);
       Product product = null;
-      while ((line = rd2.readLine()) != null) {
+      while ((line = rd.readLine()) != null) {
         if (line != null){
           product = objectMapper.readValue(line, Product.class);
         }
@@ -82,7 +61,6 @@ public class SearchController implements ISearchController
     searchQuery.setListings(listings);
 
     String jsonSQ = objectMapper.writeValueAsString(searchQuery);
-    System.out.println(jsonSQ);
     return jsonSQ;
   }
 }

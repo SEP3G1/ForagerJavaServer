@@ -1,37 +1,27 @@
-import Config.Config;
 import Controllers.*;
-import Models.Listing;
-import Models.Product;
-import Models.SearchQuery;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 
 public class EchoThread extends Thread {
     protected Socket socket;
-    private HttpClient client;
     private IListingController listingController;
     private IUserController userController;
     private ISearchController searchController;
+    private ICommunicationController communicationController;
 
     public EchoThread(Socket clientSocket) {
         this.socket = clientSocket;
-        client = new DefaultHttpClient();
-        listingController = new ListingController(client);
-        userController = new UserController(client);
-        searchController = new SearchController(client);
+        communicationController = new CommunicationsController();
+        listingController = new ListingController(communicationController);
+        userController = new UserController(communicationController);
+        searchController = new SearchController(communicationController);
     }
 
     //Listens for bytes and echos back to sender
@@ -56,7 +46,6 @@ public class EchoThread extends Thread {
                 is.read(receivedBytes, 0, len);
                 String received = new String(receivedBytes, 0, len);
 
-                System.out.println("Server received: " + received);
                 ObjectMapper objectMapper = new ObjectMapper();
                 ArrayList<String> r = objectMapper.readValue(received, new TypeReference<ArrayList<String>>(){});
                 String toSend="";
