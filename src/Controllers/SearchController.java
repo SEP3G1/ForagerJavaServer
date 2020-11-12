@@ -47,18 +47,6 @@ public class SearchController implements ISearchController
       }
     }
 
-    for (Listing listing: listings)
-    {
-      rd = communicationController.HttpGetRequest("/api/product/" + listing.productId);
-      Product product = null;
-      while ((line = rd.readLine()) != null) {
-        if (line != null){
-          product = objectMapper.readValue(line, Product.class);
-        }
-      }
-      //Insert product in listing
-      listing.product = product;
-    }
     SearchQuery searchQuery = new SearchQuery("Newest listings",listings.size());
     searchQuery.setListings(listings);
 

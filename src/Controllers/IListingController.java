@@ -8,4 +8,5 @@ public interface IListingController
   String getProducts() throws IOException;
   String getListing(String id) throws IOException;
   String createListing(String str) throws IOException;
+  String uploadImage(String str) throws IOException;
 }
