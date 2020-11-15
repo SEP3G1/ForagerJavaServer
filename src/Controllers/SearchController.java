@@ -31,9 +31,9 @@ public class SearchController implements ISearchController
 
     if (q != null)
     {
-      queryString.append(q);
+      queryString.append("?parameter=" + q);
     }
-    rd = communicationController.HttpGetRequest(queryString.toString());
+    rd = communicationController.HttpGetRequest(queryString.toString().replace(" ", "%20"));
 
     String line = "";
     ObjectMapper objectMapper = new ObjectMapper();
