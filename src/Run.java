@@ -1,15 +1,17 @@
 import Config.Config;
+import Server.SocketServer;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class RunServer {
+public class Run
+{
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException
+    {
         System.out.println("Establishing REST connection");
 
 
@@ -39,7 +41,7 @@ public class RunServer {
             }
             System.out.println("New client Connected");
             // new thread for a client
-            new EchoThread(socket).start();
+            new SocketServer(socket).start();
         }
     }
 }

@@ -1,23 +1,28 @@
+package Server;
+
+
 import Controllers.*;
+import Models.Message;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
 
-public class EchoThread extends Thread {
+public class SocketServer extends Thread {
     protected Socket socket;
     private IListingController listingController;
     private IUserController userController;
     private ISearchController searchController;
     private ICommunicationController communicationController;
     private IChatController chatController;
+    private InputStream is = null;
+    private OutputStream os = null;
 
-    public EchoThread(Socket clientSocket) {
+    public SocketServer(Socket clientSocket) throws IOException
+    {
         this.socket = clientSocket;
         communicationController = new CommunicationsController();
         listingController = new ListingController(communicationController);
@@ -28,8 +33,6 @@ public class EchoThread extends Thread {
 
     //Listens for bytes and echos back to sender
     public void run(){
-        InputStream is = null;
-        OutputStream os = null;
         try {
             is = socket.getInputStream();
             os = socket.getOutputStream();
@@ -60,33 +63,64 @@ public class EchoThread extends Thread {
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
-                    case "sendMessage" : chatController.Send(r.get(1)); break;
+                    case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
+                    case "recieveMessage" : Receive(chatController.generateMessage(r.get(1))); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
 
                 if (toSend.length() > 0)
-                {
-                    // Sending
-                    if (received.toLowerCase().equals("exit"))
-                        toSend = "Connection closed";
+                    SendBack(toSend);
 
-                    byte[] toSendBytes = toSend.getBytes();
-                    int toSendLen = toSendBytes.length;
-                    byte[] toSendLenBytes = new byte[4];
-                    toSendLenBytes[0] = (byte) (toSendLen & 0xff);
-                    toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
-                    toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
-                    toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
-                    os.write(toSendLenBytes);
-                    os.write(toSendBytes);
-                }
             } catch (SocketException e) {
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void SendBack(String toSend) throws IOException
+    {
+        byte[] toSendBytes = toSend.getBytes();
+        int toSendLen = toSendBytes.length;
+        byte[] toSendLenBytes = new byte[4];
+        toSendLenBytes[0] = (byte) (toSendLen & 0xff);
+        toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
+        toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
+        toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
+        os.write(toSendLenBytes);
+        os.write(toSendBytes);
+    }
+
+    public void SendMessageToIp(Message message) throws IOException
+    {
+        String[] connectionAddress = message.getToCompany().getConnectionAddress().split(":");
+
+        Socket socketToReceiver = new Socket(connectionAddress[0],
+            Integer.parseInt(connectionAddress[1]));
+
+        OutputStream outputStream = socketToReceiver.getOutputStream();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String[] toSend = {"recieveMessage", mapper.writeValueAsString(message)};
+
+        byte[] toSendBytes = mapper.writeValueAsString(toSend).getBytes();
+        int toSendLen = toSendBytes.length;
+        byte[] toSendLenBytes = new byte[4];
+        toSendLenBytes[0] = (byte) (toSendLen & 0xff);
+        toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
+        toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
+        toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
+        outputStream.write(toSendLenBytes);
+        outputStream.write(toSendBytes);
+    }
+
+    public String Receive(Message message)
+    {
+        System.out.println(message.getMessage() + message.getTimestamp().toString());
+     return null;
     }
 
 }

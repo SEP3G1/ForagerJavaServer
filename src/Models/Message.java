@@ -8,16 +8,15 @@ import java.sql.Timestamp;
 public class Message implements Serializable
 {
   private String message;
-  private String fromCompanyIp;
-  private int fromCompanyId;
-  private String toCompanyIp;
+  private Company fromCompany;
+  private Company toCompany;
   private Timestamp timestamp;
 
-  public Message(String message, String toCompany)
+  public Message(String message, Company toCompany, Company fromCompany)
   {
     this.message = message;
-    this.fromCompanyIp = Config.IP_T2 + ":" + Config.PORT_T2;
-    this.toCompanyIp = toCompany;
+    this.fromCompany = fromCompany;
+    this.toCompany = toCompany;
     timestamp = new Timestamp(System.currentTimeMillis());
   }
 
@@ -26,14 +25,14 @@ public class Message implements Serializable
     return message;
   }
 
-  public String getFromCompanyIp()
+  public Company getFromCompany()
   {
-    return fromCompanyIp;
+    return fromCompany;
   }
 
-  public String getToCompanyIp()
+  public Company getToCompany()
   {
-    return toCompanyIp;
+    return toCompany;
   }
 
   public Timestamp getTimestamp()
