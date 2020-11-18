@@ -15,6 +15,7 @@ public class EchoThread extends Thread {
     private IUserController userController;
     private ISearchController searchController;
     private ICommunicationController communicationController;
+    private IChatController chatController;
 
     public EchoThread(Socket clientSocket) {
         this.socket = clientSocket;
@@ -22,6 +23,7 @@ public class EchoThread extends Thread {
         listingController = new ListingController(communicationController);
         userController = new UserController(communicationController);
         searchController = new SearchController(communicationController);
+        chatController = new ChatController(); // Takes companyController as input
     }
 
     //Listens for bytes and echos back to sender
@@ -58,23 +60,27 @@ public class EchoThread extends Thread {
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
+                    case "sendMessage" : chatController.Send(r.get(1)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
 
-                // Sending
-                if (received.toLowerCase().equals("exit"))
-                    toSend = "Connection closed";
+                if (toSend.length() > 0)
+                {
+                    // Sending
+                    if (received.toLowerCase().equals("exit"))
+                        toSend = "Connection closed";
 
-                byte[] toSendBytes = toSend.getBytes();
-                int toSendLen = toSendBytes.length;
-                byte[] toSendLenBytes = new byte[4];
-                toSendLenBytes[0] = (byte)(toSendLen & 0xff);
-                toSendLenBytes[1] = (byte)((toSendLen >> 8) & 0xff);
-                toSendLenBytes[2] = (byte)((toSendLen >> 16) & 0xff);
-                toSendLenBytes[3] = (byte)((toSendLen >> 24) & 0xff);
-                os.write(toSendLenBytes);
-                os.write(toSendBytes);
+                    byte[] toSendBytes = toSend.getBytes();
+                    int toSendLen = toSendBytes.length;
+                    byte[] toSendLenBytes = new byte[4];
+                    toSendLenBytes[0] = (byte) (toSendLen & 0xff);
+                    toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
+                    toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
+                    toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
+                    os.write(toSendLenBytes);
+                    os.write(toSendBytes);
+                }
             } catch (SocketException e) {
                 break;
             } catch (IOException e) {
