@@ -14,6 +14,10 @@ public class Company {
     public List<Employee> employees;
     public String connectionAddress;
 
+    public Company() {
+        //Required for jackson to serialize to Product
+    }
+
     public Company(int companyId, String cvr, double trustScore, int numberOfVotes,
                    String name, String address, String postCode, String logo,
                    List<Employee> employees, String connectionAddress) {
