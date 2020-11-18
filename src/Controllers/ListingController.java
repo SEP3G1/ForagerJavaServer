@@ -71,4 +71,10 @@ public class ListingController implements IListingController
     }
     return "Something Really Bad Happened";
   }
+
+  @Override public String uploadImage(String str) throws IOException
+  {
+    String[] strings = str.split("\"");
+    return strings[3];
+  }
 }

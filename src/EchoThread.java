@@ -49,7 +49,6 @@ public class EchoThread extends Thread {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ArrayList<String> r = objectMapper.readValue(received, new TypeReference<ArrayList<String>>(){});
                 String toSend="";
-
                 //Match action
                 switch (r.get(0)){
                     case "search": toSend = searchController.search(r.get(1)); break;
@@ -58,6 +57,9 @@ public class EchoThread extends Thread {
                     case "createlisting": toSend = listingController.createListing(r.get(1)); break;
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
+                    case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
+                  default:
+                    System.out.println("Recieved unrecognised command: " + r);
                 }
 
                 // Sending
