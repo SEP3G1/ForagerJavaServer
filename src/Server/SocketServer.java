@@ -1,3 +1,5 @@
+package Server;
+import Config.Config;
 import Controllers.*;
 import Models.Message;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,7 +29,7 @@ public class SocketServer extends Thread {
         companyController = new CompanyController(communicationController);
         userController = new UserController(communicationController);
         searchController = new SearchController(communicationController);
-        chatController = new ChatController(); // Takes companyController as input
+        chatController = new ChatController(companyController, userController); // Takes companyController as input
     }
 
     //Listens for bytes and echos back to sender
@@ -96,10 +98,9 @@ public class SocketServer extends Thread {
 
     public void SendMessageToIp(Message message) throws IOException
     {
-        String[] connectionAddress = message.getToCompany().getConnectionAddress().split(":");
+        String connectionAddress = message.getToCompany().getConnectionAddress();
 
-        Socket socketToReceiver = new Socket(connectionAddress[0],
-            Integer.parseInt(connectionAddress[1]));
+        Socket socketToReceiver = new Socket(connectionAddress, Config.PORT_T2);
 
         OutputStream outputStream = socketToReceiver.getOutputStream();
 
@@ -121,7 +122,7 @@ public class SocketServer extends Thread {
     public String Receive(Message message)
     {
         System.out.println(message.getMessage() + message.getTimestamp().toString());
-     return null;
+        return null;
     }
 
 }

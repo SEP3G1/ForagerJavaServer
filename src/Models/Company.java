@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.ArrayList;
+
 public class Company
 {
   private int companyId;
@@ -7,22 +9,31 @@ public class Company
   private double trustScore;
   private int numberOfVotes;
   private String name;
-  private String location;
+  private String address;
+  private String postCode;
   private String logo;
   private String connectionAddress;
+  private ArrayList<Employee> employees;
+
+  public Company(){
+    //Required for jackson to serialize company
+    super();
+  }
 
   public Company(int companyId, String cvr, double trustScore,
-      int numberOfVotes, String name, String location, String logo,
-      String connectionAddress)
+      int numberOfVotes, String name, String address, String postCode,
+      String logo, String connectionAddress, ArrayList<Employee> employees)
   {
     this.companyId = companyId;
     this.cvr = cvr;
     this.trustScore = trustScore;
     this.numberOfVotes = numberOfVotes;
     this.name = name;
-    this.location = location;
+    this.address = address;
+    this.postCode = postCode;
     this.logo = logo;
     this.connectionAddress = connectionAddress;
+    this.employees = employees;
   }
 
   public int getCompanyId()
@@ -50,9 +61,14 @@ public class Company
     return name;
   }
 
-  public String getLocation()
+  public String getAddress()
   {
-    return location;
+    return address;
+  }
+
+  public String getPostCode()
+  {
+    return postCode;
   }
 
   public String getLogo()
@@ -65,4 +81,8 @@ public class Company
     return connectionAddress;
   }
 
+  public ArrayList<Employee> getEmployees()
+  {
+    return employees;
+  }
 }

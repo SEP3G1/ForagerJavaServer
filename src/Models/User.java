@@ -10,6 +10,12 @@ public class User
   private int securityLevel;
   private String password;
   private int id;
+  private int companyId;
+
+  public int getCompanyId()
+  {
+    return companyId;
+  }
 
   public String getUserName()
   {

@@ -1,5 +1,6 @@
 package Controllers;
 
+import Models.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
@@ -30,5 +31,23 @@ public class UserController implements IUserController
       return line;
     }
     return "Something Really Bad Happened";
+  }
+
+  @Override public User getUser(String id) throws IOException
+  {
+    rd = communicationController.HttpGetRequest("/api/userlogin?id=" + id);
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    User user = null;
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map listing to object
+        user = objectMapper.readValue(line, User.class);
+      }
+    }
+
+    return user;
   }
 }
