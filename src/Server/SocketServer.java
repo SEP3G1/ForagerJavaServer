@@ -1,6 +1,3 @@
-package Server;
-
-
 import Controllers.*;
 import Models.Message;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,6 +14,7 @@ public class SocketServer extends Thread {
     private IUserController userController;
     private ISearchController searchController;
     private ICommunicationController communicationController;
+    private ICompanyController companyController;
     private IChatController chatController;
     private InputStream is = null;
     private OutputStream os = null;
@@ -26,6 +24,7 @@ public class SocketServer extends Thread {
         this.socket = clientSocket;
         communicationController = new CommunicationsController();
         listingController = new ListingController(communicationController);
+        companyController = new CompanyController(communicationController);
         userController = new UserController(communicationController);
         searchController = new SearchController(communicationController);
         chatController = new ChatController(); // Takes companyController as input
@@ -60,6 +59,8 @@ public class SocketServer extends Thread {
                     case "login": toSend = userController.login(r.get(1)); break;
                     case "getlisting": toSend = listingController.getListing(r.get(1)); break;
                     case "createlisting": toSend = listingController.createListing(r.get(1)); break;
+                    case "getcompany": toSend = companyController.getCompany(r.get(1)); break;
+                    case "createcompany": toSend = companyController.createCompany(r.get(1)); break;
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
