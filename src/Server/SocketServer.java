@@ -2,6 +2,7 @@ package Server;
 import Config.Config;
 import Controllers.*;
 import Models.Message;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
@@ -67,7 +68,7 @@ public class SocketServer extends Thread {
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
                     case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
-                    case "recieveMessage" : Receive(chatController.generateMessage(r.get(1))); break;
+                    case "recieveMessage" : Receive(r.get(1)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
@@ -119,8 +120,11 @@ public class SocketServer extends Thread {
         outputStream.write(toSendBytes);
     }
 
-    public String Receive(Message message)
+    public String Receive(String messageString) throws JsonProcessingException
     {
+        ObjectMapper mapper = new ObjectMapper();
+
+        Message message = mapper.readValue(messageString, Message.class);
         System.out.println(message.getMessage() + message.getTimestamp().toString());
         return null;
     }

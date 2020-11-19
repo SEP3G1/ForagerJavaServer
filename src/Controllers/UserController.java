@@ -35,7 +35,7 @@ public class UserController implements IUserController
 
   @Override public User getUser(String id) throws IOException
   {
-    rd = communicationController.HttpGetRequest("/api/userlogin?id=" + id);
+    rd = communicationController.HttpGetRequest("/api/userlogin/" + id);
 
     String line = "";
     ObjectMapper objectMapper = new ObjectMapper();

@@ -2,69 +2,37 @@ package Models;
 
 public class User
 {
-  private String userName;
-  private String domain;
-  private String city;
-  private int birthYear;
-  private String role;
+  private String name;
+  private String email;
   private int securityLevel;
   private String password;
-  private int id;
+  private int userId;
   private int companyId;
 
-  public int getCompanyId()
+  public  User()
   {
-    return companyId;
+    super();
   }
 
-  public String getUserName()
+  public User(String name, String email, int securityLevel, String password,
+      int userId, int companyId)
   {
-    return userName;
+    this.name = name;
+    this.email = email;
+    this.securityLevel = securityLevel;
+    this.password = password;
+    this.userId = userId;
+    this.companyId = companyId;
   }
 
-  public void setUserName(String userName)
+  public String getName()
   {
-    this.userName = userName;
+    return name;
   }
 
-  public String getDomain()
+  public String getEmail()
   {
-    return domain;
-  }
-
-  public void setDomain(String domain)
-  {
-    this.domain = domain;
-  }
-
-  public String getCity()
-  {
-    return city;
-  }
-
-  public void setCity(String city)
-  {
-    this.city = city;
-  }
-
-  public int getBirthYear()
-  {
-    return birthYear;
-  }
-
-  public void setBirthYear(int birthYear)
-  {
-    this.birthYear = birthYear;
-  }
-
-  public String getRole()
-  {
-    return role;
-  }
-
-  public void setRole(String role)
-  {
-    this.role = role;
+    return email;
   }
 
   public int getSecurityLevel()
@@ -72,34 +40,18 @@ public class User
     return securityLevel;
   }
 
-  public void setSecurityLevel(int securityLevel)
-  {
-    this.securityLevel = securityLevel;
-  }
-
   public String getPassword()
   {
     return password;
   }
 
-  public void setPassword(String password)
+  public int getUserId()
   {
-    this.password = password;
+    return userId;
   }
 
-  public int getId()
+  public int getCompanyId()
   {
-    return id;
-  }
-
-  public void setId(int id)
-  {
-    this.id = id;
-  }
-
-  @Override public String toString()
-  {
-    return "User{" + "userName='" + userName + '\'' + ", password='" + password
-        + '\'' + '}';
+    return companyId;
   }
 }
