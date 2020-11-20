@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -103,26 +104,20 @@ public class SocketServer extends Thread {
 
     public void SendMessageToIp(Message message) throws IOException
     {
+        Socket socket = null;
         String connectionAddress = message.getToCompany().getConnectionAddress();
+        while (true) {
+            try {
+                socket = new Socket(connectionAddress, Config.PORT_T2);
 
-        Socket socketToReceiver = new Socket(connectionAddress, Config.PORT_T2);
-
-        OutputStream outputStream = socketToReceiver.getOutputStream();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        String[] toSend = {"recieveMessage", mapper.writeValueAsString(message)};
-
-        System.out.println(mapper.writeValueAsString(toSend));
-        byte[] toSendBytes = mapper.writeValueAsString(toSend).getBytes();
-        int toSendLen = toSendBytes.length;
-        byte[] toSendLenBytes = new byte[4];
-        toSendLenBytes[0] = (byte) (toSendLen & 0xff);
-        toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
-        toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
-        toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
-        outputStream.write(toSendLenBytes);
-        outputStream.write(toSendBytes);
+                System.out.println("New client Connected");
+                // new thread for a client
+                System.out.println("Message sent: " + message.getMessage());
+                new ChatSocketHandler(message, socket).start();
+            } catch (IOException e) {
+                System.out.println("I/O error: " + e);
+            }
+        }
     }
 
     public String Receive(String messageString) throws JsonProcessingException
