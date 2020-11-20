@@ -72,6 +72,19 @@ public class ListingController implements IListingController
     return "Something Really Bad Happened";
   }
 
+  @Override public String updateListing(String str) throws IOException
+  {
+    String query = URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+    System.out.println(str);
+    rd = communicationController.HttpPostRequest("/api/listing/" + query);
+
+    String line = "";
+    while ((line = rd.readLine()) != null) {
+      System.out.println(line);
+      return line;
+    }
+    return "Something Really Bad Happened";
+  }
   @Override public String uploadImage(String str) throws IOException
   {
     String[] strings = str.split("\"");

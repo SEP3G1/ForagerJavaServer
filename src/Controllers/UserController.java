@@ -50,4 +50,11 @@ public class UserController implements IUserController
 
     return user;
   }
+
+  @Override public String getUserAsString(String id) throws IOException
+  {
+    User u = getUser(id);
+    ObjectMapper objectMapper = new ObjectMapper();
+    return objectMapper.writeValueAsString(u);
+  }
 }

@@ -1,6 +1,7 @@
 package Server;
 import Config.Config;
 import Controllers.*;
+import Models.Company;
 import Models.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -62,7 +63,10 @@ public class SocketServer extends Thread {
                     case "login": toSend = userController.login(r.get(1)); break;
                     case "getlisting": toSend = listingController.getListing(r.get(1)); break;
                     case "createlisting": toSend = listingController.createListing(r.get(1)); break;
+                    case "updatelisting": toSend = listingController.updateListing(r.get(1)); break;
                     case "getcompany": toSend = companyController.getCompany(r.get(1)); break;
+                    case "getcompanyFromUserId": toSend = companyController.getCompany(userController.getUser(r.get(1)).getCompanyId() + ""); break;
+                    case "getUser": toSend = userController.getUserAsString(r.get(1)); break;
                     case "createcompany": toSend = companyController.createCompany(r.get(1)); break;
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
@@ -109,6 +113,7 @@ public class SocketServer extends Thread {
 
         String[] toSend = {"recieveMessage", mapper.writeValueAsString(message)};
 
+        System.out.println(mapper.writeValueAsString(toSend));
         byte[] toSendBytes = mapper.writeValueAsString(toSend).getBytes();
         int toSendLen = toSendBytes.length;
         byte[] toSendLenBytes = new byte[4];

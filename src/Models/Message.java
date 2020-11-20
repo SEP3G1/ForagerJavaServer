@@ -12,6 +12,10 @@ public class Message implements Serializable
   private Company toCompany;
   private Timestamp timestamp;
 
+  public Message(){
+    super();
+  }
+
   public Message(String message, Company toCompany, Company fromCompany)
   {
     this.message = message;

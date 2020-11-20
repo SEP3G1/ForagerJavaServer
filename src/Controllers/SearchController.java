@@ -49,7 +49,6 @@ public class SearchController implements ISearchController
 
     SearchQuery searchQuery = new SearchQuery("Newest listings",listings.size());
     searchQuery.setListings(listings);
-
     String jsonSQ = objectMapper.writeValueAsString(searchQuery);
     return jsonSQ;
   }
