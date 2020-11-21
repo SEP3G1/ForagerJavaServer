@@ -106,7 +106,6 @@ public class SocketServer extends Thread {
     {
         Socket socket = null;
         String connectionAddress = message.getToCompany().getConnectionAddress();
-        while (true) {
             try {
                 socket = new Socket(connectionAddress, Config.PORT_T2);
 
@@ -117,7 +116,6 @@ public class SocketServer extends Thread {
             } catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
-        }
     }
 
     public String Receive(String messageString) throws JsonProcessingException
