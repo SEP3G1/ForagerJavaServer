@@ -51,4 +51,18 @@ public class CompanyController implements ICompanyController
         }
         return "Something Really Bad Happened";
     }
+
+    @Override
+    public String updateCompany(String str) throws IOException
+    {
+        String query = URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+        rd = communicationController.HttpPutRequest("/api/company?companyAsString=" + query);
+
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
+            return line;
+        }
+        return "Something Really Bad Happened";
+    }
 }

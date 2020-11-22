@@ -69,6 +69,7 @@ public class SocketServer extends Thread {
                     case "getcompanyFromUserId": toSend = companyController.getCompany(userController.getUser(r.get(1)).getCompanyId() + ""); break;
                     case "getUser": toSend = userController.getUserAsString(r.get(1)); break;
                     case "createcompany": toSend = companyController.createCompany(r.get(1)); break;
+                    case "updatecompany": toSend = companyController.updateCompany(r.get(1)); break;
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;

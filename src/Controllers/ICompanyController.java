@@ -6,7 +6,6 @@ public interface ICompanyController {
 
     String getCompany(String id) throws IOException;
     String createCompany(String str) throws IOException;
-    //getAllCompanies...
-    //getCompanyId? //TODO
-    //TODO
+    String updateCompany(String s) throws  IOException;
+
 }

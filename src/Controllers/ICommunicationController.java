@@ -7,4 +7,5 @@ public interface ICommunicationController
 {
   BufferedReader HttpGetRequest(String uri) throws IOException;
   BufferedReader HttpPostRequest(String uri) throws IOException;
+  BufferedReader HttpPutRequest(String uri) throws IOException;
 }
