@@ -74,7 +74,7 @@ public class SocketServer extends Thread {
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
                     case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
-                    case "recieveMessage" : Receive(r.get(1)); break;
+                    case "recieveMessage" : chatController.receiveMessage(r.get(1)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
@@ -118,14 +118,4 @@ public class SocketServer extends Thread {
                 System.out.println("I/O error: " + e);
             }
     }
-
-    public String Receive(String messageString) throws JsonProcessingException
-    {
-        ObjectMapper mapper = new ObjectMapper();
-
-        Message message = mapper.readValue(messageString, Message.class);
-        System.out.println(message.getMessage() + message.getTimestamp().toString());
-        return null;
-    }
-
 }
