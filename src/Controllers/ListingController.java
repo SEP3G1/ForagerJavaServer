@@ -2,11 +2,15 @@ package Controllers;
 
 import Models.Listing;
 import Models.Product;
+import Models.Report;
+import Models.SearchQuery;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class ListingController implements IListingController
 {
@@ -90,4 +94,40 @@ public class ListingController implements IListingController
     String[] strings = str.split("\"");
     return strings[3];
   }
+
+  @Override
+  public String reportListing(String str) throws IOException {
+    String query = URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+    rd = communicationController.HttpPostRequest("/api/report/" + query);
+
+    String line = "";
+    while ((line = rd.readLine()) != null) {
+      System.out.println(line);
+      return line;
+    }
+    return "Something Really Bad Happened";
+  }
+
+  //
+  // MOVE THIS METHOD TO A REPORT CONTROLLER OR ELSEWHERE
+  //
+  @Override
+  public String getAllReports(String str) throws IOException {
+
+    rd = communicationController.HttpGetRequest("/api/report");
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    ArrayList<Report> reports = new ArrayList<>();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map report to object
+        reports = (ArrayList<Report>) objectMapper.readValue(line, new TypeReference<ArrayList<Report>>() {});
+      }
+    }
+    return objectMapper.writeValueAsString(reports);
+  }
+
+
 }

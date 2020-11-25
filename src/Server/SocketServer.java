@@ -73,6 +73,8 @@ public class SocketServer extends Thread {
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
+                    case "reportlisting" : toSend = listingController.reportListing(r.get(1)); break;
+                    case "getallreports": toSend = listingController.getAllReports(r.get(1)); break;
                     case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                     case "recieveMessage" : Receive(r.get(1)); break;
                   default:
