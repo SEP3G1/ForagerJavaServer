@@ -55,6 +55,7 @@ public class ChatController implements IChatController
   {
     Message message = mapper.readValue(str, Message.class);
     unreadMessages.add(message);
+    System.out.println("Message: " + message.getMessage() + ", From: " + message.getFromCompany().getName());
     return message;
   }
 
