@@ -1,6 +1,8 @@
 package Models;
 
 import Config.Config;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -10,34 +12,33 @@ public class Message implements Serializable
   private String message;
   private Company fromCompany;
   private Company toCompany;
-  private Timestamp timestamp;
+  private String timestamp;
   private int listingId;
-  private boolean isRead = false;
+  private boolean isRead;
 
   public Message(){
     super();
   }
 
-  public Message(String message, Company toCompany, Company fromCompany, int listingId)
+  public Message(String message, Company fromCompany, Company toCompany,
+      String timestamp, int listingId, boolean isRead)
   {
     this.message = message;
     this.fromCompany = fromCompany;
     this.toCompany = toCompany;
+    this.timestamp = timestamp;
     this.listingId = listingId;
-    timestamp = new Timestamp(System.currentTimeMillis());
-  }
-
-  public int getListingId()
-  {
-    return listingId;
+    this.isRead = isRead;
   }
 
   public boolean isRead()
   {
     return isRead;
   }
-  public void read(){
-    isRead = true;
+
+  public int getListingId()
+  {
+    return listingId;
   }
   public String getMessage()
   {
@@ -54,7 +55,7 @@ public class Message implements Serializable
     return toCompany;
   }
 
-  public Timestamp getTimestamp()
+  public String getTimestamp()
   {
     return timestamp;
   }

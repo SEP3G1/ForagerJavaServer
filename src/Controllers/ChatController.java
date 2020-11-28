@@ -3,27 +3,25 @@ package Controllers;
 import Models.Company;
 import Models.Message;
 import Models.User;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class ChatController implements IChatController
 {
   private  ICompanyController companyController;
   private IUserController userController;
-  private ArrayList<Message> messages;
-  private ArrayList<Message> unreadMessages;
   private ObjectMapper mapper;
 
   public ChatController(ICompanyController companyController, IUserController userController)
   {
     this.companyController = companyController;
     this.userController = userController;
-    messages = new ArrayList<>();
-    unreadMessages = new ArrayList<>();
     mapper  = new ObjectMapper();
   }
 
@@ -37,7 +35,8 @@ public class ChatController implements IChatController
       User user = userController.getUser(rinfo.get(1));
       Company toCompany = objectMapper.readValue(companyController.getCompany(user.getCompanyId() + ""), new TypeReference<Company>(){});
 
-      Message message = new Message(rinfo.get(0), toCompany, fromCompany, Integer.parseInt(rinfo.get(3))); // INSERT TOCOMPANY PLS
+      Message message = new Message(rinfo.get(0), toCompany, fromCompany,
+          System.currentTimeMillis() + "", Integer.parseInt(rinfo.get(3)), false);
       return message;
     }
     catch (JsonProcessingException e)
@@ -50,21 +49,24 @@ public class ChatController implements IChatController
     } return null;
   }
 
-  @Override public Message receiveMessage(String str)
+  @Override public String receiveMessage(String str)
       throws JsonProcessingException
   {
     Message message = mapper.readValue(str, Message.class);
-    unreadMessages.add(message);
+    MessageService.getInstance().addNewMessage(message);
     System.out.println("Message: " + message.getMessage() + ", From: " + message.getFromCompany().getName());
-    return message;
+
+    return mapper.writeValueAsString(message);
   }
 
-  @Override public String getAllMessages(int max) throws JsonProcessingException
+  @Override public String getConversation(String id)
+      throws JsonProcessingException
   {
-    //Int max gør kke noget, måske det er noget vi vil implementere
-    ArrayList<Message> joined = unreadMessages;
-    joined.addAll(messages);
+    return mapper.writeValueAsString(MessageService.getInstance().getConversation(Integer.parseInt(id)));
+  }
 
-    return mapper.writeValueAsString(joined);
+  @Override public String unreadMessages()
+  {
+    return MessageService.getInstance().unreadMessages() + "";
   }
 }
