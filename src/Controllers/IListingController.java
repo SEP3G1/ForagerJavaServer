@@ -12,4 +12,5 @@ public interface IListingController
   String uploadImage(String str) throws IOException;
   String reportListing(String str) throws IOException;
   String getAllReports(String str) throws IOException;
+  String deleteListing(String str) throws IOException;
 }

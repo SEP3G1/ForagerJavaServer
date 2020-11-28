@@ -129,5 +129,16 @@ public class ListingController implements IListingController
     return objectMapper.writeValueAsString(reports);
   }
 
+  @Override
+  public String deleteListing(String str) throws IOException {
+    rd = communicationController.HttpDeleteRequest("/api/listing/" + str);
+
+    String line = "";
+    while ((line = rd.readLine()) != null) {
+      System.out.println(line);
+      return line;
+    }
+    return "Something Really Bad Happened";
+  }
 
 }
