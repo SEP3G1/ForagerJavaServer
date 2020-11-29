@@ -71,14 +71,30 @@ public class ListingController implements IListingController
     ArrayList<String> listingPostCodes = new ArrayList<>();
     //Read body
     while ((line = rd.readLine()) != null) {
-      if (line != null){
         //Map listing to object
         //listing = (Listing) objectMapper.readValue(line, Listing.class);
         listingPostCodes = (ArrayList<String>) objectMapper.readValue(line, new TypeReference<ArrayList<String>>() {});
-      }
     }
 
     String jsonListingPostCodes = objectMapper.writeValueAsString(listingPostCodes);
+    return jsonListingPostCodes;
+  }
+
+  @Override
+  public String getListingNamesAndCovers() throws IOException {
+    rd = communicationController.HttpGetRequest("/api/listing/namescovers");  //#patrick er dette best practice eller ikke?
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    Object listingNamesAndCovers = new Object();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        listingNamesAndCovers = objectMapper.readValue(line, new TypeReference<Object>() {});
+    }
+
+    String jsonListingPostCodes = objectMapper.writeValueAsString(listingNamesAndCovers);
     return jsonListingPostCodes;
   }
 
