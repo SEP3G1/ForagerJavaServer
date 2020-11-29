@@ -60,16 +60,11 @@ public class SearchController implements ISearchController
   {
     StringBuilder queryString = new StringBuilder().append("/api/listing");
 
-    System.out.println("?parameter=" + q);
-
     if (q != null)
     {
       queryString.append("?parameter=" + q);
-
       queryString.append("&filter=" + filter);
-      System.out.println("&filter=" + filter);
       queryString.append("&sequencenumber=" + sequenceNumber);
-      System.out.println("&sequencenumber=" + sequenceNumber);
     }
     rd = communicationController.HttpGetRequest(queryString.toString().replace(" ", "%20"));
 

@@ -31,6 +31,33 @@ public class ListingController implements IListingController
     return "Something Really Bad Happened";
   }
 
+  @Override
+  public String getNumberOfResults(String q) throws IOException
+  {
+    StringBuilder queryString = new StringBuilder().append("/api/listing/count"); //#patrick er dette best practice eller ikke?
+
+    if (q != null)
+    {
+      queryString.append("?parameter=" + q);
+    }
+    rd = communicationController.HttpGetRequest(queryString.toString().replace(" ", "%20"));
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    int numberOfResults = 0;
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        numberOfResults = objectMapper.readValue(line, new TypeReference<Integer>() {});
+      }
+    }
+
+    String jsonNumberOfResults = objectMapper.writeValueAsString(numberOfResults);
+    return jsonNumberOfResults;
+  }
+
   @Override public String getProducts() throws IOException
   {
     rd = communicationController.HttpGetRequest("/api/product");
