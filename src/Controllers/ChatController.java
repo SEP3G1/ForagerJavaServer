@@ -31,9 +31,9 @@ public class ChatController implements IChatController
     try
     {
       ArrayList<String> rinfo = objectMapper.readValue(mstring, new TypeReference<ArrayList<String>>(){});
-      Company fromCompany = objectMapper.readValue(companyController.getCompany(rinfo.get(2)), new TypeReference<Company>(){});
+      Company toCompany = objectMapper.readValue(companyController.getCompany(rinfo.get(2)), new TypeReference<Company>(){});
       User user = userController.getUser(rinfo.get(1));
-      Company toCompany = objectMapper.readValue(companyController.getCompany(user.getCompanyId() + ""), new TypeReference<Company>(){});
+      Company fromCompany = objectMapper.readValue(companyController.getCompany(user.getCompanyId() + ""), new TypeReference<Company>(){});
 
       Message message = new Message(rinfo.get(0), toCompany, fromCompany,
           System.currentTimeMillis() + "", Integer.parseInt(rinfo.get(3)), false);

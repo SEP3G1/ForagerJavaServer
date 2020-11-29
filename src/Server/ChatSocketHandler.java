@@ -29,7 +29,6 @@ public class ChatSocketHandler extends Thread
 
         String[] toSend = {"recieveMessage", mapper.writeValueAsString(message)};
 
-        System.out.println(mapper.writeValueAsString(toSend));
         byte[] toSendBytes = mapper.writeValueAsString(toSend).getBytes();
         int toSendLen = toSendBytes.length;
         byte[] toSendLenBytes = new byte[4];
@@ -39,6 +38,9 @@ public class ChatSocketHandler extends Thread
         toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
         outputStream.write(toSendLenBytes);
         outputStream.write(toSendBytes);
+
+        outputStream.flush();
+        outputStream.close();
       }
       catch (JsonProcessingException e)
       {

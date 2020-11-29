@@ -73,16 +73,17 @@ public class SocketServer extends Thread {
                     case "getproducts": toSend = listingController.getProducts(); break;
                     case "getproductcategories": toSend = listingController.getProductCategories(); break;
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
-                    case "sendMessage" :toSend = SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                     case "recieveMessage" : chatController.receiveMessage(r.get(1)); break;
                     case "unread" : toSend = chatController.unreadMessages(); break;
                     case "getConversation" : toSend = chatController.getConversation(r.get(1)); break;
+                  case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
 
                 if (toSend.length() > 0)
                     SendBack(toSend);
+
 
             } catch (SocketException e) {
                 break;
@@ -105,21 +106,19 @@ public class SocketServer extends Thread {
         os.write(toSendBytes);
     }
 
-    public String SendMessageToIp(Message message) throws IOException
+    public void SendMessageToIp(Message message) throws IOException
     {
         Socket socket = null;
         String connectionAddress = message.getToCompany().getConnectionAddress();
             try {
                 socket = new Socket(connectionAddress, Config.PORT_T2);
 
-                System.out.println("New client Connected");
+                System.out.println("Connected to: " + connectionAddress);
                 // new thread for a client
                 System.out.println("Message sent: " + message.getMessage());
                 new ChatSocketHandler(message, socket).start();
-                return chatController.getConversation(message.getListingId() + "");
             } catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
-            return null;
     }
 }

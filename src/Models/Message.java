@@ -31,11 +31,6 @@ public class Message implements Serializable
     this.isRead = isRead;
   }
 
-  public boolean isRead()
-  {
-    return isRead;
-  }
-
   public int getListingId()
   {
     return listingId;
