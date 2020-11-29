@@ -38,9 +38,6 @@ public class ChatSocketHandler extends Thread
         toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
         outputStream.write(toSendLenBytes);
         outputStream.write(toSendBytes);
-
-        outputStream.flush();
-        outputStream.close();
       }
       catch (JsonProcessingException e)
       {

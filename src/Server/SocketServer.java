@@ -76,7 +76,7 @@ public class SocketServer extends Thread {
                     case "recieveMessage" : chatController.receiveMessage(r.get(1)); break;
                     case "unread" : toSend = chatController.unreadMessages(); break;
                     case "getConversation" : toSend = chatController.getConversation(r.get(1)); break;
-                  case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
+                  case "sendMessage" : toSend = SendMessageToIp(r.get(1)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
@@ -106,9 +106,10 @@ public class SocketServer extends Thread {
         os.write(toSendBytes);
     }
 
-    public void SendMessageToIp(Message message) throws IOException
+    public String SendMessageToIp(String m) throws IOException
     {
         Socket socket = null;
+        Message message = chatController.generateMessage(m);
         String connectionAddress = message.getToCompany().getConnectionAddress();
             try {
                 socket = new Socket(connectionAddress, Config.PORT_T2);
@@ -116,9 +117,14 @@ public class SocketServer extends Thread {
                 System.out.println("Connected to: " + connectionAddress);
                 // new thread for a client
                 System.out.println("Message sent: " + message.getMessage());
+
+                MessageService.getInstance().addNewMessage(message);
                 new ChatSocketHandler(message, socket).start();
+
+                return chatController.getConversation(message.getListingId() + "");
             } catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
+            return null;
     }
 }

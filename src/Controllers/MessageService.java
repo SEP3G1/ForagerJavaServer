@@ -26,7 +26,8 @@ public class MessageService
     return messageService_instance;
   }
   public void addNewMessage(Message message){
-    unreadMessages.add(message);
+    if (!unreadMessages.contains(message))
+      unreadMessages.add(message);
     if (!conversations.contains(message.getListingId()))
       conversations.add(message.getListingId());
   }
