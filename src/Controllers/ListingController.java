@@ -2,11 +2,13 @@ package Controllers;
 
 import Models.Listing;
 import Models.Product;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class ListingController implements IListingController
 {
@@ -57,6 +59,27 @@ public class ListingController implements IListingController
 
     String listingJSON = objectMapper.writeValueAsString(listing);
     return listingJSON;
+  }
+
+  @Override
+  public String getListingPostCodes() throws IOException
+  {
+    rd = communicationController.HttpGetRequest("/api/listing/postcode");
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    ArrayList<String> listingPostCodes = new ArrayList<>();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        listingPostCodes = (ArrayList<String>) objectMapper.readValue(line, new TypeReference<ArrayList<String>>() {});
+      }
+    }
+
+    String jsonListingPostCodes = objectMapper.writeValueAsString(listingPostCodes);
+    return jsonListingPostCodes;
   }
 
   @Override public String createListing(String str) throws IOException
