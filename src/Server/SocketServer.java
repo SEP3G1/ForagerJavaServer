@@ -5,6 +5,7 @@ import Models.Company;
 import Models.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.ServerSocket;
@@ -56,6 +57,8 @@ public class SocketServer extends Thread {
                 String received = new String(receivedBytes, 0, len);
 
                 ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+
                 ArrayList<String> r = objectMapper.readValue(received, new TypeReference<ArrayList<String>>(){});
                 String toSend="";
                 //Match action
@@ -76,7 +79,8 @@ public class SocketServer extends Thread {
                     case "recieveMessage" : chatController.receiveMessage(r.get(1)); break;
                     case "unread" : toSend = chatController.unreadMessages(); break;
                     case "getConversation" : toSend = chatController.getConversation(r.get(1)); break;
-                  case "sendMessage" : toSend = SendMessageToIp(r.get(1)); break;
+                  case "sendMessage" : toSend = SendMessageToIp(chatController.generateMessage(r.get(1))); break;
+                  case "sendMessageWM" : toSend = SendMessageToIp(objectMapper.readValue(r.get(1), Message.class)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
@@ -106,10 +110,9 @@ public class SocketServer extends Thread {
         os.write(toSendBytes);
     }
 
-    public String SendMessageToIp(String m) throws IOException
+    public String SendMessageToIp(Message message) throws IOException
     {
         Socket socket = null;
-        Message message = chatController.generateMessage(m);
         String connectionAddress = message.getToCompany().getConnectionAddress();
             try {
                 socket = new Socket(connectionAddress, Config.PORT_T2);

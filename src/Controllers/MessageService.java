@@ -4,6 +4,7 @@ import Models.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MessageService
 {
@@ -45,6 +46,7 @@ public class MessageService
       if (m.getListingId() == listingId)
         _conversations.add(m);
     }
+    Collections.reverse(_conversations);
     return _conversations;
   }
 }

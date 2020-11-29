@@ -14,21 +14,19 @@ public class Message implements Serializable
   private Company toCompany;
   private String timestamp;
   private int listingId;
-  private boolean isRead;
 
   public Message(){
     super();
   }
 
   public Message(String message, Company fromCompany, Company toCompany,
-      String timestamp, int listingId, boolean isRead)
+      String timestamp, int listingId)
   {
     this.message = message;
     this.fromCompany = fromCompany;
     this.toCompany = toCompany;
     this.timestamp = timestamp;
     this.listingId = listingId;
-    this.isRead = isRead;
   }
 
   public int getListingId()

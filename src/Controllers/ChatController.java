@@ -36,7 +36,7 @@ public class ChatController implements IChatController
       Company fromCompany = objectMapper.readValue(companyController.getCompany(user.getCompanyId() + ""), new TypeReference<Company>(){});
 
       Message message = new Message(rinfo.get(0), toCompany, fromCompany,
-          System.currentTimeMillis() + "", Integer.parseInt(rinfo.get(3)), false);
+          System.currentTimeMillis() + "", Integer.parseInt(rinfo.get(3)));
       return message;
     }
     catch (JsonProcessingException e)
