@@ -5,10 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -22,6 +22,7 @@ public class MessageService
     messages = new ArrayList<>();
     try {
       File myObj = new File("messages.txt");
+      myObj.createNewFile();
       Scanner myReader = new Scanner(myObj);
       ObjectMapper mapper = new ObjectMapper();
       while (myReader.hasNextLine()) {
@@ -41,6 +42,10 @@ public class MessageService
     {
       e.printStackTrace();
     }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
   }
 
   public static MessageService getInstance()
@@ -54,14 +59,15 @@ public class MessageService
     if (!messages.contains(message))
     {
       messages.add(message);
-      try {
-        FileWriter myWriter = new FileWriter("messages.txt");
-        ObjectMapper mapper = new ObjectMapper();
-        myWriter.write(mapper.writeValueAsString(message));
-        myWriter.close();
+      System.out.println("writes to file: " + message.getMessage());
+      ObjectMapper mapper = new ObjectMapper();
+      try(FileWriter fw = new FileWriter("messages.txt", true);
+          BufferedWriter bw = new BufferedWriter(fw);
+          PrintWriter out = new PrintWriter(bw))
+      {
+        out.println(mapper.writeValueAsString(message));
       } catch (IOException e) {
-        System.out.println("An error occurred while writing message to file.");
-        e.printStackTrace();
+        //exception handling left as an exercise for the reader
       }
     }
   }
@@ -71,10 +77,8 @@ public class MessageService
 
   public ArrayList<Message> getConversation(int listingId){
     ArrayList<Message> _conversations = new ArrayList<>();
-    ArrayList<Message> _messages = messages;
-    _messages.addAll(messages);
     for (Message m:
-         _messages)
+         messages)
     {
       if (m.getListingId() == listingId)
         _conversations.add(m);
