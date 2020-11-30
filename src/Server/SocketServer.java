@@ -76,6 +76,9 @@ public class SocketServer extends Thread {
                     case "reportlisting" : toSend = listingController.reportListing(r.get(1)); break;
                     case "getallreports": toSend = listingController.getAllReports(r.get(1)); break;
                     case "deletelisting" : toSend = listingController.deleteListing(r.get(1)); break;
+                    case "deletecompanywish" : toSend = companyController.deleteCompanyWish(r.get(1)); break;
+                    case "deletecompany" : toSend = companyController.deleteCompany(r.get(1)); break;
+                    case "getcompaniestodelete" : toSend = companyController.getCompaniesToDelete(r.get(1)); break;
                     case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                     case "recieveMessage" : Receive(r.get(1)); break;
                   default:

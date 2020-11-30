@@ -2,11 +2,14 @@ package Controllers;
 
 import Models.Company;
 import Models.Listing;
+import Models.Report;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class CompanyController implements ICompanyController
 {
@@ -64,5 +67,46 @@ public class CompanyController implements ICompanyController
             return line;
         }
         return "Something Really Bad Happened";
+    }
+
+    @Override
+    public String deleteCompanyWish(String str) throws IOException {
+        rd = communicationController.HttpPutRequest("/api/company/" + str);
+
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
+            return line;
+        }
+        return "Something Really Bad Happened";
+    }
+
+    @Override
+    public String deleteCompany(String str) throws IOException {
+        rd = communicationController.HttpDeleteRequest("/api/company/" + str);
+
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
+            return line;
+        }
+        return "Something Really Bad Happened";
+    }
+
+    @Override
+    public String getCompaniesToDelete(String str) throws IOException {
+        rd = communicationController.HttpGetRequest("/api/company/");
+
+        String line = "";
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<Company> companies = new ArrayList<>();
+        //Read body
+        while ((line = rd.readLine()) != null) {
+            if (line != null){
+                //Map company to object
+                companies = (ArrayList<Company>) objectMapper.readValue(line, new TypeReference<ArrayList<Company>>() {});
+            }
+        }
+        return objectMapper.writeValueAsString(companies);
     }
 }
