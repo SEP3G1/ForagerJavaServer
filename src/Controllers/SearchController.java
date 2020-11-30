@@ -24,6 +24,10 @@ public class SearchController implements ISearchController
       return getAllListings(q);
   }
 
+  @Override
+  public String lazyFilterSearch(String q, String filter, String sequenceNumber) throws IOException {
+    return getLazyFilterListings(q, filter, sequenceNumber);
+  }
 
   @Override public String getAllListings(String q) throws IOException
   {
@@ -32,6 +36,36 @@ public class SearchController implements ISearchController
     if (q != null)
     {
       queryString.append("?parameter=" + q);
+    }
+    rd = communicationController.HttpGetRequest(queryString.toString().replace(" ", "%20"));
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    ArrayList<Listing> listings = new ArrayList<>();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        listings = (ArrayList<Listing>) objectMapper.readValue(line, new TypeReference<ArrayList<Listing>>() {});
+      }
+    }
+
+    SearchQuery searchQuery = new SearchQuery((q == null)?"Newest listings":q,listings.size());
+    searchQuery.setListings(listings);
+    String jsonSQ = objectMapper.writeValueAsString(searchQuery);
+    return jsonSQ;
+  }
+
+  private String getLazyFilterListings(String q, String filter, String sequenceNumber) throws IOException
+  {
+    StringBuilder queryString = new StringBuilder().append("/api/listing");
+
+    if (q != null)
+    {
+      queryString.append("?parameter=" + q);
+      queryString.append("&filter=" + filter);
+      queryString.append("&sequencenumber=" + sequenceNumber);
     }
     rd = communicationController.HttpGetRequest(queryString.toString().replace(" ", "%20"));
 

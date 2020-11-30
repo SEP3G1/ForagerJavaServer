@@ -1,7 +1,10 @@
 <component name="libraryTable">
   <library name="lib">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$USER_HOME$/Dropbox/Software/SEM3/SEP3/httpcomponents-asyncclient-4.1.4/lib" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$USER_HOME$/Dropbox/Software/SEM3/SEP3/httpcomponents-asyncclient-4.1.4/lib" recursive="false" />
   </library>
 </component>

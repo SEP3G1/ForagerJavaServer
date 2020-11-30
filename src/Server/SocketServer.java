@@ -64,8 +64,12 @@ public class SocketServer extends Thread {
                 //Match action
                 switch (r.get(0)){
                     case "search": toSend = searchController.search(r.get(1)); break;
+                    case "lazyFilterSearch": toSend = searchController.lazyFilterSearch(r.get(1), r.get(2), r.get(3)); break;
+                    case "getNumberOfResults": toSend = listingController.getNumberOfResults(r.get(1)); break;
                     case "login": toSend = userController.login(r.get(1)); break;
                     case "getlisting": toSend = listingController.getListing(r.get(1)); break;
+                    case "getListingPostCodes": toSend = listingController.getListingPostCodes(); break;
+                    case "getListingNamesAndCovers": toSend = listingController.getListingNamesAndCovers(); break;
                     case "createlisting": toSend = listingController.createListing(r.get(1)); break;
                     case "updatelisting": toSend = listingController.updateListing(r.get(1)); break;
                     case "getcompany": toSend = companyController.getCompany(r.get(1)); break;
