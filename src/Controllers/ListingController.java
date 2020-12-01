@@ -193,4 +193,19 @@ public class ListingController implements IListingController
     }
     return objectMapper.writeValueAsString(reports);
   }
+
+  @Override public String getListingsFromCompany(String str) throws IOException
+  {
+    rd = communicationController.HttpGetRequest("/api/listing/companyListings/" + str);
+
+    String line = "";
+    String jsonListingPostCodes = "";
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      //Map listing to object
+      //listing = (Listing) objectMapper.readValue(line, Listing.class);
+      jsonListingPostCodes = line;
+    }
+    return jsonListingPostCodes;
+  }
 }
