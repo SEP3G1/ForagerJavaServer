@@ -193,10 +193,4 @@ public class ListingController implements IListingController
     }
     return objectMapper.writeValueAsString(reports);
   }
-
-  @Override
-  public void deleteListing(String str) throws IOException {
-    rd = communicationController.HttpPutRequest("/api/listing/" + str);
-  }
-
 }
