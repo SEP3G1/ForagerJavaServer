@@ -86,8 +86,6 @@ public class SocketServer extends Thread {
                     case "deletecompanywish" : toSend = companyController.deleteCompanyWish(r.get(1)); break;
                     case "deletecompany" : toSend = companyController.deleteCompany(r.get(1)); break;
                     case "getcompaniestodelete" : toSend = companyController.getCompaniesToDelete(r.get(1)); break;
-                    case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
-                    case "recieveMessage" : Receive(r.get(1)); break;
                     case "recieveMessage" : chatController.receiveMessage(r.get(1)); break;
                     case "unread" : toSend = chatController.unreadMessages(); break;
                     case "getConversation" : toSend = chatController.getConversation(r.get(1)); break;
