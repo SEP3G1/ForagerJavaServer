@@ -29,7 +29,6 @@ public class ChatSocketHandler extends Thread
 
         String[] toSend = {"recieveMessage", mapper.writeValueAsString(message)};
 
-        System.out.println(mapper.writeValueAsString(toSend));
         byte[] toSendBytes = mapper.writeValueAsString(toSend).getBytes();
         int toSendLen = toSendBytes.length;
         byte[] toSendLenBytes = new byte[4];

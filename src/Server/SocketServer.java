@@ -5,6 +5,7 @@ import Models.Company;
 import Models.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.net.ServerSocket;
@@ -56,13 +57,19 @@ public class SocketServer extends Thread {
                 String received = new String(receivedBytes, 0, len);
 
                 ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+
                 ArrayList<String> r = objectMapper.readValue(received, new TypeReference<ArrayList<String>>(){});
                 String toSend="";
                 //Match action
                 switch (r.get(0)){
                     case "search": toSend = searchController.search(r.get(1)); break;
+                    case "lazyFilterSearch": toSend = searchController.lazyFilterSearch(r.get(1), r.get(2), r.get(3)); break;
+                    case "getNumberOfResults": toSend = listingController.getNumberOfResults(r.get(1)); break;
                     case "login": toSend = userController.login(r.get(1)); break;
                     case "getlisting": toSend = listingController.getListing(r.get(1)); break;
+                    case "getListingPostCodes": toSend = listingController.getListingPostCodes(); break;
+                    case "getListingNamesAndCovers": toSend = listingController.getListingNamesAndCovers(); break;
                     case "createlisting": toSend = listingController.createListing(r.get(1)); break;
                     case "updatelisting": toSend = listingController.updateListing(r.get(1)); break;
                     case "getcompany": toSend = companyController.getCompany(r.get(1)); break;
@@ -81,12 +88,18 @@ public class SocketServer extends Thread {
                     case "getcompaniestodelete" : toSend = companyController.getCompaniesToDelete(r.get(1)); break;
                     case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                     case "recieveMessage" : Receive(r.get(1)); break;
+                    case "recieveMessage" : chatController.receiveMessage(r.get(1)); break;
+                    case "unread" : toSend = chatController.unreadMessages(); break;
+                    case "getConversation" : toSend = chatController.getConversation(r.get(1)); break;
+                  case "sendMessage" : toSend = SendMessageToIp(chatController.generateMessage(r.get(1))); break;
+                  case "sendMessageWM" : toSend = SendMessageToIp(objectMapper.readValue(r.get(1), Message.class)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
 
                 if (toSend.length() > 0)
                     SendBack(toSend);
+
 
             } catch (SocketException e) {
                 break;
@@ -109,29 +122,24 @@ public class SocketServer extends Thread {
         os.write(toSendBytes);
     }
 
-    public void SendMessageToIp(Message message) throws IOException
+    public String SendMessageToIp(Message message) throws IOException
     {
         Socket socket = null;
         String connectionAddress = message.getToCompany().getConnectionAddress();
             try {
                 socket = new Socket(connectionAddress, Config.PORT_T2);
 
-                System.out.println("New client Connected");
+                System.out.println("Connected to: " + connectionAddress);
                 // new thread for a client
                 System.out.println("Message sent: " + message.getMessage());
+
+                MessageService.getInstance().addNewMessage(message);
                 new ChatSocketHandler(message, socket).start();
+
+                return chatController.getConversation(message.getListingId() + "");
             } catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
+            return null;
     }
-
-    public String Receive(String messageString) throws JsonProcessingException
-    {
-        ObjectMapper mapper = new ObjectMapper();
-
-        Message message = mapper.readValue(messageString, Message.class);
-        System.out.println(message.getMessage() + message.getTimestamp().toString());
-        return null;
-    }
-
 }

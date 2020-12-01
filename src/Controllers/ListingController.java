@@ -5,6 +5,7 @@ import Models.Product;
 import Models.Report;
 import Models.SearchQuery;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,6 +32,33 @@ public class ListingController implements IListingController
       return line;
     }
     return "Something Really Bad Happened";
+  }
+
+  @Override
+  public String getNumberOfResults(String q) throws IOException
+  {
+    StringBuilder queryString = new StringBuilder().append("/api/listing/count"); //#patrick er dette best practice eller ikke?
+
+    if (q != null)
+    {
+      queryString.append("?parameter=" + q);
+    }
+    rd = communicationController.HttpGetRequest(queryString.toString().replace(" ", "%20"));
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    int numberOfResults = 0;
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        numberOfResults = objectMapper.readValue(line, new TypeReference<Integer>() {});
+      }
+    }
+
+    String jsonNumberOfResults = objectMapper.writeValueAsString(numberOfResults);
+    return jsonNumberOfResults;
   }
 
   @Override public String getProducts() throws IOException
@@ -61,6 +89,43 @@ public class ListingController implements IListingController
 
     String listingJSON = objectMapper.writeValueAsString(listing);
     return listingJSON;
+  }
+
+  @Override
+  public String getListingPostCodes() throws IOException
+  {
+    rd = communicationController.HttpGetRequest("/api/listing/postcode");
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    ArrayList<String> listingPostCodes = new ArrayList<>();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        listingPostCodes = (ArrayList<String>) objectMapper.readValue(line, new TypeReference<ArrayList<String>>() {});
+    }
+
+    String jsonListingPostCodes = objectMapper.writeValueAsString(listingPostCodes);
+    return jsonListingPostCodes;
+  }
+
+  @Override
+  public String getListingNamesAndCovers() throws IOException {
+    rd = communicationController.HttpGetRequest("/api/listing/namescovers");  //#patrick er dette best practice eller ikke?
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    Object listingNamesAndCovers = new Object();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+        //Map listing to object
+        //listing = (Listing) objectMapper.readValue(line, Listing.class);
+        listingNamesAndCovers = objectMapper.readValue(line, new TypeReference<Object>() {});
+    }
+
+    String jsonListingPostCodes = objectMapper.writeValueAsString(listingNamesAndCovers);
+    return jsonListingPostCodes;
   }
 
   @Override public String createListing(String str) throws IOException
