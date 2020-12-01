@@ -75,6 +75,7 @@ public class SocketServer extends Thread {
                     case "uploadImage": toSend = listingController.uploadImage(r.get(1)); break;
                     case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                     case "recieveMessage" : Receive(r.get(1)); break;
+                    case "createuser" : toSend = userController.createUser(r.get(1)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
