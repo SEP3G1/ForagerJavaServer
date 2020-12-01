@@ -91,6 +91,9 @@ public class SocketServer extends Thread {
                     case "getConversation" : toSend = chatController.getConversation(r.get(1)); break;
                   case "sendMessage" : toSend = SendMessageToIp(chatController.generateMessage(r.get(1))); break;
                   case "sendMessageWM" : toSend = SendMessageToIp(objectMapper.readValue(r.get(1), Message.class)); break;
+                    case "sendMessage" : SendMessageToIp(chatController.generateMessage(r.get(1))); break;
+                    case "recieveMessage" : Receive(r.get(1)); break;
+                    case "createuser" : toSend = userController.createUser(r.get(1)); break;
                   default:
                     System.out.println("Recieved unrecognised command: " + r);
                 }
