@@ -196,7 +196,7 @@ public class ListingController implements IListingController
 
   @Override
   public void deleteListing(String str) throws IOException {
-    rd = communicationController.HttpDeleteRequest("/api/listing/" + str);
+    rd = communicationController.HttpPutRequest("/api/listing/" + str);
   }
 
 }
