@@ -9,6 +9,7 @@ public class Listing
   public int listingId;
   public int userId;
   public int productId;
+  public int companyId;
   public Product product = null;
   public double price;
   public double quantity;
@@ -29,7 +30,7 @@ public class Listing
     super();
   }
 
-  public Listing(int listingId, int userId, int productId, Product product,
+  public Listing(int listingId, int userId, int productId, int companyId, Product product,
       double price, double quantity, String unit, String startDate, String bestBefore,
       String pickupAddress, String postcode, boolean hasDelivery,
       String pictureList, int numberOfViews, boolean isArchived, String comment,
@@ -39,6 +40,7 @@ public class Listing
     this.userId = userId;
     this.productId = productId;
     this.product = product;
+    this.companyId = companyId;
     this.price = price;
     this.quantity = quantity;
     this.unit = unit;
@@ -52,6 +54,11 @@ public class Listing
     this.isArchived = isArchived;
     this.comment = comment;
     this.pictures = pictures;
+  }
+
+  public int getCompanyId()
+  {
+    return companyId;
   }
 
   public int getListingId()

@@ -195,15 +195,8 @@ public class ListingController implements IListingController
   }
 
   @Override
-  public String deleteListing(String str) throws IOException {
+  public void deleteListing(String str) throws IOException {
     rd = communicationController.HttpDeleteRequest("/api/listing/" + str);
-
-    String line = "";
-    while ((line = rd.readLine()) != null) {
-      System.out.println(line);
-      return line;
-    }
-    return "Something Really Bad Happened";
   }
 
 }
