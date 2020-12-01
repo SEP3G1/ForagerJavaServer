@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class UserController implements IUserController
@@ -57,4 +59,19 @@ public class UserController implements IUserController
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.writeValueAsString(u);
   }
+
+  @Override public String createUser(String str) throws IOException {
+    System.out.println("Jeg har ramt t2");
+      String query = URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+      rd = communicationController.HttpPostRequest("/api/userlogin?userAsString=" + query);
+
+      String line = "";
+      while ((line = rd.readLine()) != null) {
+        System.out.println(line);
+        return line;
+      }
+      return "Something Really Bad Happened";
+    }
+
+
 }

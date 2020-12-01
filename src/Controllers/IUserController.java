@@ -10,4 +10,5 @@ public interface IUserController
 
   User getUser(String id) throws  IOException;
   String getUserAsString(String id) throws  IOException;
+  String createUser(String str) throws IOException;
 }
