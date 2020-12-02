@@ -1,14 +1,9 @@
 package Controllers;
 
 import Models.Listing;
-import Models.Product;
 import Models.Report;
-import Models.SearchQuery;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +13,8 @@ import java.util.ArrayList;
 
 public class ListingController implements IListingController
 {
-  private static int maxReportsPerHour = 3; //hardcode #patrick
+  private static final int MAX_REPORTS_PER_HOUR = 3;
+
   private ICommunicationController communicationController;
   private BufferedReader rd;
 
@@ -41,7 +37,7 @@ public class ListingController implements IListingController
   @Override
   public String getNumberOfResults(String q) throws IOException
   {
-    StringBuilder queryString = new StringBuilder().append("/api/listing/count"); //#patrick er dette best practice eller ikke?
+    StringBuilder queryString = new StringBuilder().append("/api/listing/count");
 
     if (q != null)
     {
@@ -116,7 +112,7 @@ public class ListingController implements IListingController
 
   @Override
   public String getListingNamesAndCovers() throws IOException {
-    rd = communicationController.HttpGetRequest("/api/listing/namescovers");  //#patrick er dette best practice eller ikke?
+    rd = communicationController.HttpGetRequest("/api/listing/namescovers");
 
     String line = "";
     ObjectMapper objectMapper = new ObjectMapper();
@@ -171,7 +167,6 @@ public class ListingController implements IListingController
 
     String line = "";
     while ((line = rd.readLine()) != null) {
-      System.out.println(line);
       return line;
     }
     return "Something Really Bad Happened";
@@ -179,19 +174,6 @@ public class ListingController implements IListingController
 
   @Override
   public String isUserAllowedToReport(String userId) throws IOException{
-   // ObjectMapper objectMapper = new ObjectMapper();
-   // objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
-   // int reportingUserId = -1;
-
-  //  try {
-  //    Report report = objectMapper.readValue(str, new TypeReference<Report>(){}); //Hvorfor "{}"? #patrick
-  //    reportingUserId = report.userId;
-  //    System.out.println("Tier 2 says the reporting user Id is: " + reportingUserId);
-  //  }
-  //  catch (JsonProcessingException e)
-  //  {
-  //    e.printStackTrace();
-  //  }
 
     rd = communicationController.HttpGetRequest("/api/report/numberofreports?userid=" + userId + "&since=lasthour");
 
@@ -206,7 +188,7 @@ public class ListingController implements IListingController
         numberOfReports = objectMapper.readValue(line, new TypeReference<Integer>() {});
       }
     }
-    return (numberOfReports < maxReportsPerHour) + "";
+    return (numberOfReports < MAX_REPORTS_PER_HOUR) + "";
   }
   //
   // MOVE THIS METHOD TO A REPORT CONTROLLER OR ELSEWHERE
