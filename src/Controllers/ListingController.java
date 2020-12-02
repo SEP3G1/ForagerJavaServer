@@ -4,9 +4,12 @@ import Models.Listing;
 import Models.Product;
 import Models.Report;
 import Models.SearchQuery;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 
 public class ListingController implements IListingController
 {
+  private static int maxReportsPerHour = 3; //hardcode #patrick
   private ICommunicationController communicationController;
   private BufferedReader rd;
 
@@ -173,6 +177,37 @@ public class ListingController implements IListingController
     return "Something Really Bad Happened";
   }
 
+  @Override
+  public String isUserAllowedToReport(String userId) throws IOException{
+   // ObjectMapper objectMapper = new ObjectMapper();
+   // objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+   // int reportingUserId = -1;
+
+  //  try {
+  //    Report report = objectMapper.readValue(str, new TypeReference<Report>(){}); //Hvorfor "{}"? #patrick
+  //    reportingUserId = report.userId;
+  //    System.out.println("Tier 2 says the reporting user Id is: " + reportingUserId);
+  //  }
+  //  catch (JsonProcessingException e)
+  //  {
+  //    e.printStackTrace();
+  //  }
+
+    rd = communicationController.HttpGetRequest("/api/report/numberofreports?userid=" + userId + "&since=lasthour");
+
+    String line = "";
+    ObjectMapper objectMapper = new ObjectMapper();
+    int numberOfReports = -1;
+    ArrayList<Report> reports = new ArrayList<>();
+    //Read body
+    while ((line = rd.readLine()) != null) {
+      if (line != null){
+        //Map report to object
+        numberOfReports = objectMapper.readValue(line, new TypeReference<Integer>() {});
+      }
+    }
+    return (numberOfReports < maxReportsPerHour) + "";
+  }
   //
   // MOVE THIS METHOD TO A REPORT CONTROLLER OR ELSEWHERE
   //

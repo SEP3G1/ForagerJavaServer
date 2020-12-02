@@ -13,6 +13,7 @@ public interface IListingController
   String createListing(String str) throws IOException;
   String updateListing(String str) throws IOException;
   String uploadImage(String str) throws IOException;
+  String isUserAllowedToReport(String userId) throws IOException;
   String reportListing(String str) throws IOException;
   String getAllReports(String str) throws IOException;
   String getListingsFromCompany(String str) throws IOException;
