@@ -24,6 +24,8 @@ public class CompanyController implements ICompanyController
 
     @Override public String getCompany(String id) throws IOException
     {
+        if (id.equals("null") || id.equals(-1 + ""))
+            return "null";
         rd = communicationController.HttpGetRequest("/api/company/" + id);
 
         String line = "";

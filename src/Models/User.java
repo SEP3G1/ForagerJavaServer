@@ -25,6 +25,10 @@ public class User
     this.companyId = companyId;
   }
 
+  public void setCompanyId(int companyId) {
+    this.companyId = companyId;
+  }
+
   public String getName()
   {
     return name;
