@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public interface IChatController extends Remote
 {
   Message generateMessage(String mstring) throws RemoteException;
-  String receiveMessage(String str) throws JsonProcessingException;
+  void receiveMessage(String str) throws JsonProcessingException;
   String getConversation(String id) throws JsonProcessingException;
   String unreadMessages();
 }

@@ -49,14 +49,12 @@ public class ChatController implements IChatController
     } return null;
   }
 
-  @Override public String receiveMessage(String str)
+  @Override public void receiveMessage(String str)
       throws JsonProcessingException
   {
     Message message = mapper.readValue(str, Message.class);
     MessageService.getInstance().addNewMessage(message);
     System.out.println("Message: " + message.getMessage() + ", From: " + message.getFromCompany().getName());
-
-    return mapper.writeValueAsString(message);
   }
 
   @Override public String getConversation(String id)
