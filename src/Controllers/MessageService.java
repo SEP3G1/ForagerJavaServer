@@ -56,7 +56,7 @@ public class MessageService
     return messageService_instance;
   }
   public void addNewMessage(Message message){
-    if (!messages.contains(message))
+    if (!messages.contains(message) && !messages.get(messages.size()-1).getMessage().equals(message.getMessage()))
     {
       messages.add(message);
       System.out.println("writes to file: " + message.getMessage());
